@@ -22,6 +22,10 @@ public class Ocuurencesofcharacters {
 		for(int i=0;i<ch.length;i++) {
 			object.put(ch[i], object.getOrDefault(ch[i], 0)+1);
 		}
+		
+		for(Entry<Character,Integer> s:object.entrySet()) {
+			System.out.println(s.getKey()+"---"+s.getValue());
+		}
 	}
 
 }
