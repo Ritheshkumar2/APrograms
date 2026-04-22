@@ -1,10 +1,14 @@
 package cgi;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.time.Duration;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
@@ -23,8 +27,41 @@ public class PalindromeCheck {
 		//reverseanumber();
 		//reverseastring();
 		//reverseonlyoddlengthvalues();
-		waitrelatedscenario();
+		//waitrelatedscenario();
+		brokenlinks();
 
+	}
+
+	private static void brokenlinks() {
+		WebDriver driver;
+		driver=new ChromeDriver();
+		driver.get("");
+		
+		List<WebElement> link=driver.findElements(By.tagName("a"));
+		
+		for(WebElement links:link) {
+			String l=links.getAttribute("href");
+			if(l == null || l.isEmpty() || l.contains("javascript")) {
+				continue;
+			}
+			try {
+				URL url=new URL(l);
+				HttpURLConnection http=(HttpURLConnection) url.openConnection();
+				http.setConnectTimeout(2000);
+				http.connect();
+				int responsecode=http.getResponseCode();
+				if(responsecode >=400) {
+					System.out.println(l+":its a broken link"+"status code:"+responsecode);
+				}else {
+					System.out.println(l+":its a valid link"+"status code:"+responsecode);
+				}
+				http.disconnect();
+				
+			}catch(Exception e) {
+				System.out.println(l + " -> Exception occurred");
+			}
+		}
+		
 	}
 
 	private static void waitrelatedscenario() {
